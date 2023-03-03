@@ -2,7 +2,7 @@
   "name": "react-homework-template",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://VitaliyMeshechek.github.io/goit-react-hw-07-phonebook/",
+  "homepage": "https://VitaliyMeshechek.github.io/goit-react-hw-08-phonebook/",
   "dependencies": {
     "@redux-devtools/extension": "^3.2.5",
     "@reduxjs/toolkit": "^1.9.2",
@@ -16,6 +16,7 @@
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.43.1",
     "react-redux": "^8.0.5",
+    "react-router-dom": "^6.8.2",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.1.1",
     "redux": "^4.2.1",
@@ -50,7 +51,9 @@
   },
   "json.schemas": [
     {
-      "fileMatch": ["/package.json"],
+      "fileMatch": [
+        "/package.json"
+      ],
       "url": "https://json.schemastore.org/package",
       "schema": true
     }
