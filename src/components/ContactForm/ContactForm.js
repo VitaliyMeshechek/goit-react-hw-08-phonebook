@@ -1,14 +1,26 @@
 import { useForm } from "react-hook-form";
 import { toast } from 'react-toastify';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import TextField from '@mui/material/TextField';
+
 
 import { useSelector, useDispatch } from "react-redux";
-import { addContact } from "redux/operations";
-import { selectContacts } from "redux/selectors";
-import { Form, Label, Input, Button } from './ContactForm.styled';
+import { addContact } from "redux/contacts/operations";
+import { selectContacts } from "redux/contacts/selectors";
+import { Form, Button } from './ContactForm.styled';
 
 export const ContactForm = () => {
   const contacts = useSelector(selectContacts);
   const dispatch = useDispatch();
+
+  const schema = yup.object().shape({
+    name: yup.string().required('Name is required'),
+    number: yup.string().min(7, 'must be at least 7 characters long').required('Number is required'),
+  }).required();
+
+  // const onSubmit = data => console.log(data);
+
   const {
     register,
     handleSubmit,
@@ -18,12 +30,12 @@ export const ContactForm = () => {
     reset } = useForm({
       defaultValues: {
       name: '',
-      phone: '',
+      number: '',
   },
-  mode: "onBlur",
-});
+   resolver: yupResolver(schema),
 
-  console.log(contacts);
+  mode: "onSubmit",
+});
 
   const onSubmit = (event) => {
     for (const contact of contacts) {
@@ -32,47 +44,54 @@ export const ContactForm = () => {
        return;
       };
 
-      if (contact.phone === event.phone) {
-        toast.error(`The entered ${event.phone} already exists in contacts! Please enter another number!`);
+      if (contact.number === event.number) {
+        toast.error(`The entered ${event.number} already exists in contacts! Please enter another number!`);
        return;
       };
   }
+
     dispatch(addContact(event));
+    console.log(event)
 
       reset();
   }
 
+
     return (
       <Form onSubmit={handleSubmit(onSubmit)}>
-      <Label>
-        Name
-        <Input
-          {...register("name")}
-          placeholder="Vitaliy Meshechek"
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
-        />
-        {errors.name && <p>Fields must be filled!</p>}
-      </Label>
-      <Label>
-        Number
-        <Input
-          {...register("phone")}
+      <TextField
+        label="Name"
+        variant="outlined"
+        sx={{ width: '65ch' }}
+        error={!!errors.name?.message}
+        id="outlined-error"
+        helperText={errors.name?.message}
+        {...register("name")}
+        placeholder="Vitaliy Meshechek"
+        required
+
+      />
+      <TextField
+          id="outlined-basic"
+          label="Number"
+          variant="outlined"
+          sx={{ width: '65ch', margin: '20px'}}
+          error={!!errors.number?.message}
+          helperText={errors.number?.message}
+          {...register("number")}
           placeholder="283-34-54"
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+          // pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+          // title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
         />
-        {errors.phone && <p>Fields must be filled!</p>}
-      </Label>
+
 
       <Button type="submit">Add contact</Button>
     </Form>
     );
 }
-
-
+        // {errors.number && <p>Fields must be filled!</p>}
+      // {errors.name && <p>Fields must be filled!</p>}
 
 
 

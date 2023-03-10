@@ -1,43 +1,52 @@
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useEffect, lazy } from 'react';
+import { useDispatch } from 'react-redux';
+import { Route, Routes } from 'react-router-dom';
+import { Layout } from 'components/Layout';
+import { PrivateRoute } from 'components/PrivateRoute';
+import { RestrictedRoute } from 'components/RestrictedRoute';
+import { refreshUser } from 'redux/auth/operations';
+import { useAuth } from 'hooks';
 
-import { ContactForm } from './components/ContactForm/ContactForm';
-import { Filter } from './components/Filter/Filter';
-import { ContactList } from './components/ContactList/ContactList';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectContacts, selectIsLoading, selectError } from 'redux/selectors';
-import { useEffect } from 'react';
-import { fetchContacts } from 'redux/operations';
-import { Container, Title, Paragraph } from 'App.styled';
-
-
+const HomePage = lazy(() => import('./pages/Home/Home'));
+const RegisterPage = lazy(() => import('./pages/Register/Register'));
+const LoginPage = lazy(() => import('./pages/Login/Login'));
+const ContactsPage = lazy(() => import('./pages/Contacts/Contacts'));
 
 export const App = () => {
-  const contacts = useSelector(selectContacts);
-  const isLoading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
   const dispatch = useDispatch();
-  const contactsLength = contacts.length;
+  const { isRefreshing } = useAuth();
 
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(refreshUser());
   }, [dispatch]);
 
-   return (
-     <Container>
-       <Title title="Phonebook">Phonebook</Title>
-       <ContactForm />
-       <Title title="Contact">Contact</Title>
-       <Filter />
-       {isLoading && !error && <b>Request in progress...</b>}
-       {contactsLength > 0 ? (
-        <ContactList />
-      ) : (
-        <Paragraph>Currently your phonebook has no contacts. Please add them.</Paragraph>
-      )}
-      <ToastContainer position="top-center" autoClose={3000} theme="colored" />
-     </Container>
-   );
-}
+  return isRefreshing ? (
+    <b>Refreshing user...</b>
+  ) : (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route
+          path="/register"
+          element={
+            <RestrictedRoute redirectTo="/contacts" component={<RegisterPage />} />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <RestrictedRoute redirectTo="/contacts" component={<LoginPage />} />
+          }
+        />
+        <Route
+          path="/contacts"
+          element={
+            <PrivateRoute redirectTo="/login" component={<ContactsPage />} />
+          }
+        />
+      </Route>
+    </Routes>
+  );
+};
 
 
