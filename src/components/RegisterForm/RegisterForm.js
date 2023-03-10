@@ -9,15 +9,11 @@ export const RegisterForm = () => {
   const {
     register,
     handleSubmit,
-    formState: {
-      errors,
-    },
     reset } = useForm({
       defaultValues: {
         name: '',
         email: '',
         password: '',
-        // file: '',
   }
 });
 
@@ -26,7 +22,6 @@ export const RegisterForm = () => {
       name: event.name,
       email: event.email,
       password: event.password,
-      // file: event.file,
     }));
     reset();
   };
@@ -48,10 +43,6 @@ export const RegisterForm = () => {
         Password
       </Label>
         <Input {...register("password")} type="password" name="password" />
-        {/* <Label>
-        File
-      </Label>
-        <Input {...register("file")} type="file" name="file" /> */}
         </Container>
       <Button type="submit">Register</Button>
     </Form>
