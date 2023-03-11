@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
 import { registerUser } from "redux/auth/operations";
@@ -18,6 +19,13 @@ export const RegisterForm = () => {
 });
 
   const onSubmit = event => {
+    if (!event.name.trim() || !event.email.trim() || !event.password.trim()) {
+      return toast.error('All fields must be filled!');
+    } else if (event.password.length < 8) {
+      return toast.info(
+        'The password should be least at 8 characters long, it must contain uppercase and lowercase letters and numbers!',
+      );
+    }
     dispatch(registerUser({
       name: event.name,
       email: event.email,

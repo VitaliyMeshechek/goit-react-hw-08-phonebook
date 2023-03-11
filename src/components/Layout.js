@@ -12,7 +12,7 @@ export const Layout = () => {
       <Suspense fallback={null}>
         <Outlet />
       </Suspense>
-      <ToastContainer position="top-center" autoClose={3000} theme="colored" />
+      <ToastContainer position="top-center" autoClose={5000} theme="colored" />
     </div>
   );
 };

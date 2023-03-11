@@ -50,7 +50,7 @@ export const UserMenu = () => {
       onClick={() => dispatch(logOut())}
       sx={{  color: '#FFFFFF', margin: '7px' }}
       >
-        Logout
+        Log out
       </LogoutButton>
     </Container>
   );
